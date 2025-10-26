@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hedera Wallet Creator 🌿</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #d4f3e3, #b6e3ff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      color: #222;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #0b3d91;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      padding: 2rem;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    button {
+      background: #0b3d91;
+      color: white;
+      border: none;
+      border-radius: 2rem;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background: #1051c2;
+    }
+
+    #status {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #444;
+      white-space: pre-wrap;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 1rem;
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌿 Hedera Wallet Creator</h1>
+  <div class="card">
+    <p>Create or connect your Hedera wallet below.</p>
+    <button id="createWallet">✨ Create Hedera Wallet</button>
+    <div id="status">Ready.</div>
+  </div>
+
+  <footer>Made with love 🪶</footer>
+
+  <script>
+    // 🧠 Placeholder for future Hedera SDK integration
+    // When the button is clicked, we simulate wallet creation.
+    const btn = document.getElementById('createWallet');
+    const status = document.getElementById('status');
+
+    btn.addEventListener('click', async () => {
+      status.innerText = '⏳ Creating wallet... please wait';
+      btn.disabled = true;
+
+      // Simulated delay (mimic Hedera API call)
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Temporary fake account ID for testing
+      const fakeAccountId = '0.0.' + Math.floor(Math.random() * 100000);
+      status.innerText = `✅ Wallet created successfully!\nAccount ID: ${fakeAccountId}`;
+      btn.disabled = false;
+    });
+
+    // TODO: 🔒 Replace this simulated flow with:
+    // 1. Import the Hedera SDK (hedera-sdk-js)
+    // 2. Connect wallet via your chosen provider
+    // 3. Use Client.forTestnet() or Client.forMainnet() as needed
+    // 4. Securely store credentials (.env or backend only)
+  </script>
+</body>
+</html>
