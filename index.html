@@ -1,159 +1,59 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Soulbloomers — EthOnline 2025 demo</title>
-  <meta name="description" content="Soulbloomers — eco-friendly art & book editions as community NFTs (demo)" />
+  <meta charset="UTF-8">
+  <title>Soulbloomers NFT Mint 🌸</title>
   <style>
-    :root{
-      --bg:#fbfbf9; --card:#fff; --accent:#2f6b5b; --muted:#6b6b6b;
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-    body{margin:0;background:linear-gradient(180deg,#fcfff9 0%, #f6fbf6 100%);color:#0b1820;}
-    .wrap{max-width:980px;margin:48px auto;padding:28px;}
-    header{display:flex;align-items:center;gap:18px}
-    .logo{width:72px;height:72px;border-radius:14px;background:radial-gradient(circle at 30% 30%, #ffd9c3, #bfead4);display:flex;align-items:center;justify-content:center;font-weight:700;color:#2f6b5b}
-    h1{margin:0;font-size:28px}
-    p.lead{color:var(--muted);margin:8px 0 18px}
-    .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 6px 20px rgba(20,40,30,0.06);margin-top:18px}
-    .actions{display:flex;gap:12px;margin-top:14px}
-    button{background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
-    button.secondary{background:transparent;color:var(--accent);border:1px solid rgba(47,107,91,0.12)}
-    .small{font-size:13px;color:var(--muted)}
-    pre{background:#f4f6f5;padding:12px;border-radius:8px;overflow:auto}
-    footer{margin-top:28px;color:var(--muted);font-size:13px}
-    .mint-info{display:flex;gap:16px;align-items:center}
-    .meta{font-size:14px;color:#1b2e2a}
-    .notice{background:#fff8e6;border-left:4px solid #ffd27f;padding:12px;border-radius:8px;margin-top:14px}
+    body { font-family: 'Poppins', sans-serif; text-align: center; padding: 40px; background: #faf9f6; }
+    h2 { color: #6a3fa0; }
+    input, button { margin: 10px; padding: 10px 20px; border-radius: 8px; border: none; }
+    button { background: #6a3fa0; color: white; cursor: pointer; }
+    button:disabled { background: grey; }
+    img { margin-top: 20px; width: 200px; border-radius: 12px; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo">SB</div>
-      <div>
-        <h1>Soulbloomers — EthOnline 2025 (demo)</h1>
-        <p class="lead">Eco-friendly books & art cards as community keys (NFTs). This demo shows a walletless, gas-free UX for judges: claim a proof, download it, and see how it anchors to decentralised storage (Lighthouse/IPFS) — roadmap to Hedera for low-fee minting.</p>
-      </div>
-    </header>
+  <h2>Mint Your Soulbloomers NFT 🌺</h2>
+  <input type="file" id="fileInput" accept="image/*">
+  <br>
+  <button id="connect">Connect Wallet</button>
+  <button id="mint" disabled>Mint NFT</button>
+  <div id="preview"></div>
 
-    <section class="card">
-      <div style="display:flex;gap:18px;align-items:center;">
-        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='120'><rect rx='12' width='100%' height='100%' fill='%23f6fff6'/><text x='50%' y='52%' dominant-baseline='middle' text-anchor='middle' font-family='serif' font-size='18' fill='%232f6b5b'>Soulbloomers</text></svg>" alt="Soulbloomers" style="width:160px;border-radius:8px;box-shadow:0 6px 16px rgba(15,30,25,0.06)"/>
-        <div>
-          <div class="meta">Showcase: claim a **demo** eco-NFT (no blockchain fee) → downloads NFT metadata + local proof file you can show to judges.</div>
-          <div class="actions">
-            <button id="claimBtn">Claim demo NFT</button>
-            <button class="secondary" id="downloadBtn" disabled>Download proof</button>
-            <button class="secondary" id="resetBtn">Reset demo</button>
-          </div>
-        </div>
-      </div>
+  <script src="https://cdn.jsdelivr.net/npm/@hashgraph/sdk@2.64.5/dist/browser/index.js"></script>
+  <script>
+    let userAccount = null;
+    let selectedImage = null;
 
-      <div class="notice">
-        <strong>Important:</strong> This demo does not mint on-chain. It simulates a low-friction, walletless claim flow and produces a download-ready metadata file that is IPFS / Lighthouse ready.
-      </div>
-
-      <div style="margin-top:14px">
-        <div><strong>Demo output (JSON preview)</strong></div>
-        <pre id="jsonOut">No demo claimed yet — click “Claim demo NFT”.</pre>
-      </div>
-    </section>
-
-    <section class="card" style="margin-top:16px">
-      <h3 style="margin:0 0 8px 0">Why this demo suits Soulbloomers</h3>
-      <ul style="margin:0 0 8px 18px;color:var(--muted)">
-        <li>Zero barrier: users can claim a proof without a wallet and later link it to a real wallet.</li>
-        <li>Green-friendly: metadata can be stored on IPFS/Lighthouse; final minting can use Hedera HTS (low-fee) or lazy minting on L2.</li>
-        <li>Flexible: proof JSON is ready for IPFS and future minting flows.</li>
-      </ul>
-      <div class="small" style="margin-top:8px">Roadmap: Magic (passwordless wallets) → Yellow/Thirdweb paymaster (gasless UX) → Hedera HTS for low-fee anchoring.</div>
-    </section>
-
-    <footer>
-      <div style="margin-top:8px;color:var(--muted)">Demo made for EthOnline 2025 — show claim flow, download proof, and reference the roadmap to Hedera + Lighthouse for judges. Repo: clionachee/soulbloomers-ethonline2025</div>
-    </footer>
-  </div>
-
-<script>
-  // >>> simple demo claim that creates NFT metadata and local proof (no blockchain)
-  const claimBtn = document.getElementById('claimBtn');
-  const downloadBtn = document.getElementById('downloadBtn');
-  const resetBtn = document.getElementById('resetBtn');
-  const jsonOut = document.getElementById('jsonOut');
-
-  function randomId(len=8){
-    return Math.random().toString(36).slice(2,2+len);
-  }
-
-  function sampleImageDataURI(){
-    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400'><rect rx='20' width='100%' height='100%' fill='%23e8fff0'/><text x='50%' y='48%' dominant-baseline='middle' text-anchor='middle' font-family='serif' font-size='36' fill='%232f6b5b'>Soulbloomers</text><text x='50%' y='62%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16' fill='%235f7f70'>Demo edition</text></svg>`;
-    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-  }
-
-  function buildDemoNFT(){
-    const id = 'sb-' + new Date().toISOString().replace(/[:.]/g,'') + '-' + randomId(4);
-    const meta = {
-      name: "Soulbloomers — Demo edition",
-      description: "Demo proof for Soulbloomers — eco book/card edition. Locally generated proof (not on-chain).",
-      id,
-      edition: 1,
-      createdAt: new Date().toISOString(),
-      creator: "Soulbloomers (demo)",
-      image: sampleImageDataURI(),
-      attributes: [
-        {trait_type:"Eco", value:"low-carbon demo"},
-        {trait_type:"Community Key", value:"demo-only"}
-      ]
+    // Simulated wallet connection
+    document.getElementById('connect').onclick = async () => {
+      alert('In full version, this connects to HashPack wallet 🌿');
+      userAccount = "0.0.USER_WALLET_ID"; // temporary simulation
+      document.getElementById('mint').disabled = false;
+      alert(`Connected as: ${userAccount}`);
     };
-    return meta;
-  }
 
-  function enableDownload(meta){
-    downloadBtn.disabled = false;
-    downloadBtn.onclick = () => {
-      const blob = new Blob([JSON.stringify(meta, null, 2)], {type: 'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = meta.id + '-soulbloomers-proof.json';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    };
-  }
-
-  claimBtn.onclick = () => {
-    const meta = buildDemoNFT();
-    localStorage.setItem('soulbloomers_demo_claim', JSON.stringify(meta));
-    jsonOut.textContent = JSON.stringify(meta, null, 2);
-    enableDownload(meta);
-    claimBtn.textContent = 'Demo claimed ✓';
-    claimBtn.disabled = true;
-  };
-
-  resetBtn.onclick = () => {
-    localStorage.removeItem('soulbloomers_demo_claim');
-    jsonOut.textContent = "No demo claimed yet — click “Claim demo NFT”.";
-    downloadBtn.disabled = true;
-    claimBtn.textContent = 'Claim demo NFT';
-    claimBtn.disabled = false;
-  };
-
-  (function(){
-    try{
-      const s = localStorage.getItem('soulbloomers_demo_claim');
-      if(s){
-        const meta = JSON.parse(s);
-        jsonOut.textContent = JSON.stringify(meta, null, 2);
-        enableDownload(meta);
-        claimBtn.textContent = 'Demo claimed ✓';
-        claimBtn.disabled = true;
+    // Image upload & preview
+    document.getElementById('fileInput').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          selectedImage = e.target.result;
+          document.getElementById('preview').innerHTML = `<img src="${selectedImage}" alt="Preview">`;
+        };
+        reader.readAsDataURL(file);
       }
-    }catch(e){}
-  })();
-</script>
+    });
+
+    // Simulated mint
+    document.getElementById('mint').onclick = async () => {
+      if (!selectedImage) {
+        alert('Please upload your image first 🌸');
+        return;
+      }
+      alert(`Minting NFT with your uploaded art!\nWallet: ${userAccount}\n(Preview only for now)`);
+    };
+  </script>
 </body>
 </html>
