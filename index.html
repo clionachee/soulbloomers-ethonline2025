@@ -1,59 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Soulbloomers NFT Mint 🌸</title>
-  <style>
-    body { font-family: 'Poppins', sans-serif; text-align: center; padding: 40px; background: #faf9f6; }
-    h2 { color: #6a3fa0; }
-    input, button { margin: 10px; padding: 10px 20px; border-radius: 8px; border: none; }
-    button { background: #6a3fa0; color: white; cursor: pointer; }
-    button:disabled { background: grey; }
-    img { margin-top: 20px; width: 200px; border-radius: 12px; }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@hashgraph/sdk@2.64.5/dist/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@hashconnect/browser/dist/hashconnect.min.js"></script>
 </head>
-<body>
-  <h2>Mint Your Soulbloomers NFT 🌺</h2>
-  <input type="file" id="fileInput" accept="image/*">
-  <br>
-  <button id="connect">Connect Wallet</button>
-  <button id="mint" disabled>Mint NFT</button>
-  <div id="preview"></div>
+<body class="bg-gradient-to-b from-pink-100 via-white to-green-100 min-h-screen flex flex-col items-center justify-center text-centre font-[Poppins]">
+  <div class="p-8 bg-white/80 backdrop-blur-md rounded-3xl shadow-xl w-96 text-center">
+    <h1 class="text-2xl font-semibold text-green-700 mb-4">🌸 Soulbloomers NFT</h1>
+    <p class="text-sm text-gray-600 mb-4">Mint your own eco-friendly NFT on Hedera Testnet.</p>
 
-  <script src="https://cdn.jsdelivr.net/npm/@hashgraph/sdk@2.64.5/dist/browser/index.js"></script>
-  <script>
-    let userAccount = null;
-    let selectedImage = null;
+    <button id="connectWallet" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full shadow transition-all">Connect HashPack Wallet</button>
+    <p id="walletStatus" class="text-sm text-gray-500 mt-2"></p>
 
-    // Simulated wallet connection
-    document.getElementById('connect').onclick = async () => {
-      alert('In full version, this connects to HashPack wallet 🌿');
-      userAccount = "0.0.USER_WALLET_ID"; // temporary simulation
-      document.getElementById('mint').disabled = false;
-      alert(`Connected as: ${userAccount}`);
+    <div id="mintSection" class="hidden mt-6">
+      <input id="fileInput" type="file" accept="image/*" class="mb-3 w-full border border-gray-300 rounded p-2" />
+      <button id="mintBtn" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full shadow transition-all">Mint NFT 🌼</button>
+      <p id="mintStatus" class="text-sm text-gray-700 mt-3"></p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { HashConnect } from "https://cdn.jsdelivr.net/npm/hashconnect/dist/hashconnect.min.js";
+
+    const appMetadata = {
+      name: "Soulbloomers NFT",
+      description: "Mint your eco NFT on Hedera",
+      icon: "https://bafybeidpbgstg37wuri2okjai3eyomaqsrwhrzalhlwfvaxz7v6ec6r5am.ipfs.w3s.link/logo.png"
     };
 
-    // Image upload & preview
-    document.getElementById('fileInput').addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = e => {
-          selectedImage = e.target.result;
-          document.getElementById('preview').innerHTML = `<img src="${selectedImage}" alt="Preview">`;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+    const connectBtn = document.getElementById('connectWallet');
+    const walletStatus = document.getElementById('walletStatus');
+    const mintSection = document.getElementById('mintSection');
+    const mintBtn = document.getElementById('mintBtn');
+    const mintStatus = document.getElementById('mintStatus');
+    const fileInput = document.getElementById('fileInput');
 
-    // Simulated mint
-    document.getElementById('mint').onclick = async () => {
-      if (!selectedImage) {
-        alert('Please upload your image first 🌸');
+    const hashconnect = new HashConnect();
+    let pairingData;
+
+    async function connectWallet() {
+      walletStatus.innerText = 'Connecting...';
+      pairingData = await hashconnect.init(appMetadata, "testnet", false);
+      walletStatus.innerText = 'Connected to HashPack!';
+      connectBtn.classList.add('hidden');
+      mintSection.classList.remove('hidden');
+    }
+
+    connectBtn.addEventListener('click', connectWallet);
+
+    mintBtn.addEventListener('click', async () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        mintStatus.innerText = 'Please select an image first.';
         return;
       }
-      alert(`Minting NFT with your uploaded art!\nWallet: ${userAccount}\n(Preview only for now)`);
-    };
+
+      mintStatus.innerText = 'Minting on Hedera testnet...';
+
+      // For demo: simulate successful mint (since testnet tokens require setup)
+      setTimeout(() => {
+        mintStatus.innerHTML = '✨ NFT minted successfully! (Simulated) <br> Hash: <code>0.0.123456</code>';
+      }, 2000);
+    });
   </script>
 </body>
 </html>
