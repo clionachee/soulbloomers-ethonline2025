@@ -1,0 +1,76 @@
+// 🌸 Soulbloomers NFT minting example (Hedera Testnet)
+// This script runs in Node.js, not in front-end yet (please do NOT expose our keys in browser, thanks with love).
+
+// Import Hedera SDK
+const {
+  AccountId,
+  PrivateKey,
+  Client,
+  TokenCreateTransaction,
+  TokenMintTransaction,
+  TokenType
+} = require("@hashgraph/sdk");
+
+// Async main function
+async function main() {
+  let client;
+  try {
+    // 🌿 Step 1: Set Hedera Testnet credentials
+    // Sign up for a free Testnet account here: https://portal.hedera.com/
+    // After registration, copy your Account ID and Private Key into environment variables:
+    //
+    //   export MY_ACCOUNT_ID=0.0.xxxxxxx
+    //   export MY_PRIVATE_KEY=302e0201...  (no “0x” prefix)
+    //
+    const MY_ACCOUNT_ID = AccountId.fromString(process.env.MY_ACCOUNT_ID);
+    const MY_PRIVATE_KEY = PrivateKey.fromStringECDSA(process.env.MY_PRIVATE_KEY);
+
+    // 🌱 Step 2: Connect to Hedera Testnet
+    client = Client.forTestnet();
+    client.setOperator(MY_ACCOUNT_ID, MY_PRIVATE_KEY);
+    console.log('Connected to Hedera Testnet 🌸');
+
+    // 🌼 Step 3: Generate a new supply key (used to mint NFTs later)
+    const supplyKey = PrivateKey.generate();
+
+    // 🌷 Step 4: Create your NFT collection
+    const nftCreateTx = await new TokenCreateTransaction()
+      .setTokenName('Soulbloomers Art')
+      .setTokenSymbol('SBLM')
+      .setTokenType(TokenType.NonFungibleUnique)
+      .setTreasuryAccountId(MY_ACCOUNT_ID)
+      .setInitialSupply(0)
+      .setSupplyKey(supplyKey)
+      .freezeWith(client)
+      .sign(MY_PRIVATE_KEY); // sign as treasury
+
+    const nftCreateSubmit = await nftCreateTx.execute(client);
+    const nftCreateRx = await nftCreateSubmit.getReceipt(client);
+    const tokenId = nftCreateRx.tokenId;
+    console.log('✅ Soulbloomers NFT Collection Created:', tokenId.toString());
+
+    // 🌺 Step 5: Mint your first NFT
+    // Replace with your own IPFS CID from Pinata
+    const pinataCID = 'bafybeidpbgstg37wuri2okjai3eyomaqsrwhrzalhlwfvaxz7v6ec6r5am';
+
+    const mintTx = await new TokenMintTransaction()
+      .setTokenId(tokenId)
+      .setMetadata([Buffer.from(pinataCID)])
+      .freezeWith(client)
+      .sign(supplyKey); // mint signed by supply key
+
+    const mintSubmit = await mintTx.execute(client);
+    const mintRx = await mintSubmit.getReceipt(client);
+
+    console.log('🌿 NFT Minted Successfully!');
+    console.log('Transaction Status:', mintRx.status.toString());
+    console.log('View on HashScan: https://hashscan.io/testnet/token/' + tokenId.toString());
+
+  } catch (error) {
+    console.error('Error minting NFT:', error);
+  } finally {
+    if (client) client.close();
+  }
+}
+
+main();
